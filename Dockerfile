@@ -1,0 +1,13 @@
+FROM golang:1.17
+
+WORKDIR /app
+
+COPY . .
+
+RUN ls -l
+
+RUN go build -o main main.go
+
+EXPOSE 7080 7080
+
+CMD ["./main"]
