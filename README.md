@@ -1,5 +1,9 @@
 # Service application
 
+## Run application
+
+    go run main.go
+
 ## Compile application
 
     go build -o main main.go
@@ -8,4 +12,3 @@
 
     go mod init service
     go run .
-
