@@ -1,20 +1,42 @@
 package main
 
 import (
+	"database/sql"
+	"fmt"
 	"log"
 	"net/http"
 
 	"service/handlers"
+
+	_ "github.com/lib/pq"
 )
+
+var db *sql.DB
 
 func main() {
 
-	var number uint64 = 56
+	configureDatabase()
 
 	handlers.RegisterHandlers()
 
 	log.Println("Starting server...")
-	http.ListenAndServe("localhost:7080", nil)
+	http.ListenAndServe("0.0.0.0:7080", nil)
+}
 
-	println("Number is: ", number)
+// https://golang.org/doc/tutorial/database-access
+// https://data-nerd.blog/2020/04/11/connecting-to-postgresql-from-go-lang-project/
+func configureDatabase() {
+
+	connStr := "user=postgres dbname=demo password=secure host=0.0.0.0 sslmode=disable"
+	db, err := sql.Open("postgres", connStr)
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+
+	err = db.Ping()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("Connected!")
 }
