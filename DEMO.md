@@ -1,1 +1,0 @@
-https://levelup.gitconnected.com/golang-move-the-configuration-to-an-external-file-for-better-maintainability-4dd258dc5612
