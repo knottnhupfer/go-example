@@ -10,4 +10,10 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_DB=demo
     volumes:
-      - ./db-init:/docker-entrypoint-initdb.d
+      - ./staging/docker-compose/db-init:/docker-entrypoint-initdb.d
+  app:
+    image: localhost/app
+    ports:
+      - 7080:8080
+    volumes:
+      - ./staging/docker-compose/config/:/app/config
