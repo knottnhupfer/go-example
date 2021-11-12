@@ -1,19 +1,30 @@
 version: "3.8"
 
 services:
-  db:
+  postgres:
     image: postgres:14.0-alpine3.14
     ports:
       - 5432:5432
     environment:
       - POSTGRES_PASSWORD=secure
       - POSTGRES_USER=postgres
-      - POSTGRES_DB=demo
+      - POSTGRES_DB=demopostgres
     volumes:
       - ./staging/docker-compose/db-init:/docker-entrypoint-initdb.d
+  mysql:
+    image: mysql:8.0
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+      - MYSQL_DATABASE=demomysql
+      - MYSQL_USER=mysql
+      - MYSQL_PASSWORD=secret123
   app:
     image: localhost/app
     ports:
       - 7080:8080
     volumes:
       - ./staging/docker-compose/config/:/app/config
+    # depends_on:
+    #   - db

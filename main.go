@@ -9,6 +9,7 @@ import (
 
 	"service/handlers"
 
+	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/lib/pq"
 	"gopkg.in/yaml.v2"
 )
@@ -26,14 +27,34 @@ func main() {
 
 	conf, _ := readConfiguration("config/application.yaml")
 
-	// configureDatabase(*conf)
+	connectToMySqlDatabase(*conf)
+	connectToPostgresDatabase(*conf)
 
 	log.Println("Starting server on address: ", conf.Service.BindAddress)
 	handlers.RegisterHandlers()
 	http.ListenAndServe(conf.Service.BindAddress, nil)
 }
 
-func configureDatabase(conf Configuration) {
+func connectToMySqlDatabase(conf Configuration) {
+	db, err := sql.Open("mysql", "mysql:secret123@tcp(mysql:3306)/demomysql")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
+	var version string
+
+	err2 := db.QueryRow("SELECT VERSION()").Scan(&version)
+
+	if err2 != nil {
+		log.Fatal(err2)
+	}
+
+	log.Println("MySQL version: ", version)
+}
+
+func connectToPostgresDatabase(conf Configuration) {
 
 	log.Println("Configured db connection string is: ", conf.Service.DbConnectString)
 
@@ -57,7 +78,7 @@ func readConfiguration(filename string) (*Configuration, error) {
 		log.Println("Configuration file not found, use default values.")
 		configuration := Configuration{}
 		configuration.Service.BindAddress = "0.0.0.0:7080"
-		configuration.Service.DbConnectString = "user=postgres dbname=demo password=secure host=0.0.0.0 sslmode=disable"
+		configuration.Service.DbConnectString = "user=postgres dbname=demopostgres password=secure host=0.0.0.0 sslmode=disable"
 		return &configuration, err
 	}
 

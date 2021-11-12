@@ -1,3 +1,4 @@
 service:
     bindAddress: 0.0.0.0:8080
-    dbConnectString: user=postgres dbname=demo password=secure host=db sslmode=disable
+    dbConnectString: user=postgres dbname=demopostgres password=secure host=postgres sslmode=disable
+# comment
